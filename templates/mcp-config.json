@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "supabase": {
+      "command": "node",
+      "args": ["/Users/SEU_USUARIO/lab/.mcp-servers/supabase/dist/index.js"],
+      "env": {
+        "SUPABASE_URL": "https://seu-projeto.supabase.co",
+        "SUPABASE_ANON_KEY": "sua-chave-anonima-aqui",
+        "SUPABASE_SERVICE_ROLE_KEY": "sua-service-role-key-aqui"
+      }
+    }
+  }
+}
