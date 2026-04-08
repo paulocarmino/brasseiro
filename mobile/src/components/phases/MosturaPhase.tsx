@@ -121,7 +121,10 @@ export function MosturaPhase({ phase, session }: MosturaPhaseProps) {
               completedSteps={session.completedSteps}
               sessionId={session.id}
               onToggleItem={(key) => toggleStep(session.id, key)}
-              onComplete={() => handleDone(index)}
+              onComplete={() => {
+                handleDone(index)
+                setPhase(session.id, "fervura")
+              }}
             />
           )
         }

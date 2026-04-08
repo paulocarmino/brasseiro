@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native"
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { ArrowLeft, Beer } from "lucide-react-native"
 import { useNavigation, useRoute } from "@react-navigation/native"
@@ -49,7 +49,7 @@ export function BrassagemScreen() {
   const currentPhase = phases.find((p) => p.id === session.currentPhase)
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: c.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: c.background }]} edges={["top", "left", "right"]}>
       {/* Header */}
       <View style={[styles.header, { borderBottomColor: c.border }]}>
         <TouchableOpacity
@@ -72,9 +72,14 @@ export function BrassagemScreen() {
         <View style={{ width: 24 }} />
       </View>
 
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         {/* Phase Wizard */}
         <PhaseWizard currentPhase={session.currentPhase} />
@@ -94,6 +99,7 @@ export function BrassagemScreen() {
         {/* Phase content */}
         <PhaseRenderer session={session} phases={phases} />
       </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }

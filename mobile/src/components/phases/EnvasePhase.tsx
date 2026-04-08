@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
 import { Check, Beer, ArrowLeft } from "lucide-react-native"
-import { useNavigation } from "@react-navigation/native"
+import { useNavigation, CommonActions } from "@react-navigation/native"
 import { useThemeColors, fonts, fontSize, spacing, borderRadius } from "@/theme"
 import { StepCard } from "@/components/brew/StepCard"
 import { ChecklistItem } from "@/components/brew/ChecklistItem"
@@ -44,7 +44,7 @@ export function EnvasePhase({ phase, session }: EnvasePhaseProps) {
 
     return (
       <View style={styles.celebration}>
-        <Text style={styles.partyEmoji}>🎉</Text>
+        <Beer size={48} color={c.primary} />
         <Text style={[styles.congratsTitle, { color: c.foreground }]}>
           Parabens, Brasseiro!
         </Text>
@@ -87,7 +87,14 @@ export function EnvasePhase({ phase, session }: EnvasePhaseProps) {
 
         <TouchableOpacity
           style={[styles.historyBtn, { backgroundColor: c.primary }]}
-          onPress={() => navigation.goBack()}
+          onPress={() =>
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{ name: "MainTabs" }],
+              })
+            )
+          }
         >
           <Beer size={18} color={c.primaryForeground} />
           <Text style={[styles.historyBtnText, { color: c.primaryForeground }]}>
@@ -189,10 +196,6 @@ const styles = StyleSheet.create({
   celebration: {
     alignItems: "center",
     paddingVertical: spacing["2xl"],
-  },
-  partyEmoji: {
-    fontSize: 64,
-    marginBottom: spacing.base,
   },
   congratsTitle: {
     fontFamily: fonts.display,

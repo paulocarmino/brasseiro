@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Beer, Clock, BookOpen } from "lucide-react-native"
 import { HomeStack } from "./HomeStack"
 import { HistoricoStack } from "./HistoricoStack"
@@ -11,6 +12,7 @@ const Tab = createBottomTabNavigator<BottomTabParamList>()
 
 export function BottomTabNavigator() {
   const c = useThemeColors()
+  const insets = useSafeAreaInsets()
 
   return (
     <Tab.Navigator
@@ -21,8 +23,8 @@ export function BottomTabNavigator() {
         tabBarStyle: {
           backgroundColor: c.card,
           borderTopColor: c.border,
-          paddingBottom: 4,
-          height: 60,
+          paddingBottom: insets.bottom,
+          height: 60 + insets.bottom,
         },
         tabBarLabelStyle: {
           fontFamily: fonts.bodySemiBold,

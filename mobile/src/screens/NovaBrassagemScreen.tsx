@@ -6,7 +6,6 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
-  Alert,
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import {
@@ -126,17 +125,14 @@ export function NovaBrassagemScreen() {
   const [fermentationType, setFermentationType] = useState<FermentationType>("cooler")
 
   function handleStart() {
-    if (!name.trim()) {
-      Alert.alert("Nome obrigatorio", "De um nome pra sua brassagem!")
-      return
-    }
+    const sessionName = name.trim() || `Brassagem ${new Date().toLocaleDateString("pt-BR")}`
 
     const validHops: HopAddition[] = hops
       .filter((h) => h.name.trim() && h.grams > 0)
       .map(({ _id: _ignored, ...hop }) => hop)
 
     const id = createSession({
-      name: name.trim(),
+      name: sessionName,
       mashTempC,
       mashDurationMin,
       boilDurationMin,

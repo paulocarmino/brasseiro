@@ -201,25 +201,19 @@ export function ResfriamentoPhase({ phase, session }: ResfriamentoPhaseProps) {
           </View>
         )}
 
-        <TouchableOpacity
-          style={[
-            styles.nextBtn,
-            {
-              backgroundColor: fermDayCount >= 6 ? c.primary : c.muted,
-              opacity: fermDayCount >= 6 ? 1 : 0.5,
-            },
-          ]}
-          onPress={handleStartColdCrash}
-          disabled={fermDayCount < 6}
-        >
-          <Text
-            style={[
-              styles.nextBtnText,
-              { color: fermDayCount >= 6 ? c.primaryForeground : c.mutedForeground },
-            ]}
-          >
-            Iniciar Cold Crash (dia {fermDayCount}/6 min.)
+        {fermDayCount < 6 && (
+          <Text style={[styles.hint, { color: c.mutedForeground }]}>
+            Recomendado esperar pelo menos 6 dias antes do cold crash (dia {fermDayCount}/6)
           </Text>
+        )}
+        <TouchableOpacity
+          style={[styles.nextBtn, { backgroundColor: c.primary }]}
+          onPress={handleStartColdCrash}
+        >
+          <Text style={[styles.nextBtnText, { color: c.primaryForeground }]}>
+            Iniciar Cold Crash (Geladeira)
+          </Text>
+          <ArrowRight size={18} color={c.primaryForeground} />
         </TouchableOpacity>
       </View>
     )
@@ -237,29 +231,19 @@ export function ResfriamentoPhase({ phase, session }: ResfriamentoPhaseProps) {
 
       <WarningBanner message="Nao mexa no fermentador! Deixe na geladeira parado." />
 
-      <TouchableOpacity
-        style={[
-          styles.nextBtn,
-          {
-            backgroundColor: condDayCount >= 4 ? c.primary : c.muted,
-            opacity: condDayCount >= 4 ? 1 : 0.5,
-          },
-        ]}
-        onPress={() => store.setPhase(session.id, "envase")}
-        disabled={condDayCount < 4}
-      >
-        <Text
-          style={[
-            styles.nextBtnText,
-            { color: condDayCount >= 4 ? c.primaryForeground : c.mutedForeground },
-          ]}
-        >
-          Proximo: Envase (dia {condDayCount}/4 min.)
+      {condDayCount < 4 && (
+        <Text style={[styles.hint, { color: c.mutedForeground }]}>
+          Recomendado pelo menos 4 dias de cold crash (dia {condDayCount}/4)
         </Text>
-        <ArrowRight
-          size={18}
-          color={condDayCount >= 4 ? c.primaryForeground : c.mutedForeground}
-        />
+      )}
+      <TouchableOpacity
+        style={[styles.nextBtn, { backgroundColor: c.primary }]}
+        onPress={() => store.setPhase(session.id, "envase")}
+      >
+        <Text style={[styles.nextBtnText, { color: c.primaryForeground }]}>
+          Proximo: Envase
+        </Text>
+        <ArrowRight size={18} color={c.primaryForeground} />
       </TouchableOpacity>
     </View>
   )
@@ -341,5 +325,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.mono,
     fontSize: fontSize["3xl"],
     fontWeight: "700",
+  },
+  hint: {
+    fontFamily: fonts.body,
+    fontSize: fontSize.xs,
+    textAlign: "center" as const,
+    marginTop: spacing.md,
   },
 })

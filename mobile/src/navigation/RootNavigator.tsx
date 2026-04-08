@@ -13,7 +13,6 @@ export function RootNavigator() {
         name="Brassagem"
         component={BrassagemScreen}
         options={{
-          presentation: "fullScreenModal",
           animation: "slide_from_right",
         }}
       />
