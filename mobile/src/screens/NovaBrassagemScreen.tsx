@@ -47,6 +47,8 @@ function Stepper({ value, onDecrease, onIncrease, label, suffix }: StepperProps)
         <TouchableOpacity
           style={[styles.stepperBtn, { backgroundColor: c.secondary }]}
           onPress={onDecrease}
+          accessibilityRole="button"
+          accessibilityLabel={`Diminuir ${label}`}
         >
           <Minus size={18} color={c.foreground} />
         </TouchableOpacity>
@@ -57,6 +59,8 @@ function Stepper({ value, onDecrease, onIncrease, label, suffix }: StepperProps)
         <TouchableOpacity
           style={[styles.stepperBtn, { backgroundColor: c.secondary }]}
           onPress={onIncrease}
+          accessibilityRole="button"
+          accessibilityLabel={`Aumentar ${label}`}
         >
           <Plus size={18} color={c.foreground} />
         </TouchableOpacity>
@@ -86,6 +90,9 @@ function SelectCard({ selected, onPress, icon: Icon, title, subtitle }: SelectCa
       ]}
       onPress={onPress}
       activeOpacity={0.7}
+      accessibilityRole="radio"
+      accessibilityLabel={title}
+      accessibilityState={{ checked: selected }}
     >
       <Icon size={24} color={selected ? c.primary : c.mutedForeground} />
       <Text
@@ -157,7 +164,11 @@ export function NovaBrassagemScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: c.background }]}>
       {/* Header */}
       <View style={[styles.header, { borderBottomColor: c.border }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
+        >
           <ArrowLeft size={24} color={c.foreground} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, { color: c.foreground }]}>
@@ -255,7 +266,11 @@ export function NovaBrassagemScreen() {
               />
             </View>
             {hops.length > 1 && (
-              <TouchableOpacity onPress={() => removeHop(hop._id)}>
+              <TouchableOpacity
+                onPress={() => removeHop(hop._id)}
+                accessibilityRole="button"
+                accessibilityLabel={`Remover lupulo ${hop.name || ""}`}
+              >
                 <Trash2 size={18} color={c.destructive} />
               </TouchableOpacity>
             )}
@@ -264,6 +279,8 @@ export function NovaBrassagemScreen() {
         <TouchableOpacity
           style={[styles.addHopBtn, { borderColor: c.border }]}
           onPress={addHop}
+          accessibilityRole="button"
+          accessibilityLabel="Adicionar lupulo"
         >
           <Plus size={16} color={c.primary} />
           <Text style={[styles.addHopText, { color: c.primary }]}>
@@ -318,6 +335,8 @@ export function NovaBrassagemScreen() {
           style={[styles.startBtn, { backgroundColor: c.primary }]}
           onPress={handleStart}
           activeOpacity={0.8}
+          accessibilityRole="button"
+          accessibilityLabel="Iniciar Brassagem"
         >
           <Beer size={20} color={c.primaryForeground} />
           <Text style={[styles.startBtnText, { color: c.primaryForeground }]}>

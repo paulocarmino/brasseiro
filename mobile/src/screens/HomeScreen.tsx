@@ -81,6 +81,8 @@ export function HomeScreen() {
               navigation.navigate("Brassagem", { id: activeSession.id })
             }
             activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityLabel={`Continuar brassagem ${activeSession.name}`}
           >
             <View style={styles.cardHeader}>
               <Beer size={20} color={c.primary} />
@@ -115,6 +117,8 @@ export function HomeScreen() {
                 ]}
                 onPress={() => navigation.navigate("Brassagem", { id: session.id })}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel={`Acompanhar ${session.name}`}
               >
                 <View style={styles.cardHeader}>
                   <Beer size={20} color={c.primary} />
@@ -141,6 +145,8 @@ export function HomeScreen() {
           style={[styles.card, { backgroundColor: c.card, borderColor: c.border }]}
           onPress={() => navigation.navigate("NovaBrassagem")}
           activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel="Nova Brassagem"
         >
           <View style={[styles.plusCircle, { backgroundColor: c.primary + "1A" }]}>
             <Plus size={28} color={c.primary} />

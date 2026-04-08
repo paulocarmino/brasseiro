@@ -34,7 +34,11 @@ export function BrassagemScreen() {
           <Text style={[styles.notFoundText, { color: c.foreground }]}>
             Sessao nao encontrada
           </Text>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            accessibilityRole="button"
+            accessibilityLabel="Voltar"
+          >
             <Text style={[styles.backLink, { color: c.primary }]}>Voltar</Text>
           </TouchableOpacity>
         </View>
@@ -48,7 +52,12 @@ export function BrassagemScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: c.background }]}>
       {/* Header */}
       <View style={[styles.header, { borderBottomColor: c.border }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={8}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel="Voltar"
+        >
           <ArrowLeft size={24} color={c.foreground} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>

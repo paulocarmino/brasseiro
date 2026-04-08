@@ -38,7 +38,7 @@ interface BrewSessionStore {
 }
 
 function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7)
+  return crypto.randomUUID()
 }
 
 export const useBrewSessionStore = create<BrewSessionStore>()(

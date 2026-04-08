@@ -112,6 +112,8 @@ export function HistoricoScreen() {
           style={styles.deleteBtn}
           onPress={() => handleDelete(item)}
           hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={`Excluir brassagem ${item.name}`}
         >
           <Trash2 size={18} color={c.destructive} />
         </TouchableOpacity>

@@ -8,11 +8,25 @@ import { PlayfairDisplay_400Regular, PlayfairDisplay_700Bold } from "@expo-googl
 import { SourceSans3_400Regular, SourceSans3_600SemiBold, SourceSans3_700Bold } from "@expo-google-fonts/source-sans-3"
 import { JetBrainsMono_400Regular } from "@expo-google-fonts/jetbrains-mono"
 import { useColorScheme } from "react-native"
+import * as Notifications from "expo-notifications"
 import { RootNavigator } from "@/navigation/RootNavigator"
 import { colors } from "@/theme/colors"
 import { useUiStore } from "@/stores/uiStore"
+import { ErrorBoundary } from "@/components/ErrorBoundary"
 
 SplashScreen.preventAutoHideAsync()
+
+// Configure how notifications appear when the app is in the foreground.
+// Called once at app startup so the lifecycle is explicit.
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+})
 
 const BrasseiroLightTheme = {
   ...DefaultTheme,
@@ -72,11 +86,13 @@ export default function App() {
   const statusBarStyle = resolvedTheme === "dark" ? "light" : "dark"
 
   return (
-    <SafeAreaProvider onLayout={onLayoutRootView}>
-      <NavigationContainer theme={navigationTheme}>
-        <RootNavigator />
-        <StatusBar style={statusBarStyle} />
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <ErrorBoundary>
+      <SafeAreaProvider onLayout={onLayoutRootView}>
+        <NavigationContainer theme={navigationTheme}>
+          <RootNavigator />
+          <StatusBar style={statusBarStyle} />
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </ErrorBoundary>
   )
 }
