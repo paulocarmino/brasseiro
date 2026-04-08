@@ -27,7 +27,7 @@ export function EnvasePhase({ phase, session }: EnvasePhaseProps) {
 
   function handleDone(index: number) {
     store.completeStep(session.id, `envase:${index}`)
-    store.advanceStep(session.id)
+    store.advanceStep(session.id, phase.steps.length)
 
     // Check if this was the last step
     if (index === phase.steps.length - 1) {

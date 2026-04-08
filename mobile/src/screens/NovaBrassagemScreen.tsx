@@ -28,6 +28,81 @@ import type { HopAddition, EnvaseType, FermentationType } from "@/types/brew"
 
 type Nav = NativeStackNavigationProp<HomeStackParamList & RootStackParamList>
 
+type HopFormItem = HopAddition & { _id: string }
+
+interface StepperProps {
+  value: number
+  onDecrease: () => void
+  onIncrease: () => void
+  label: string
+  suffix: string
+}
+
+function Stepper({ value, onDecrease, onIncrease, label, suffix }: StepperProps) {
+  const c = useThemeColors()
+  return (
+    <View style={styles.stepperRow}>
+      <Text style={[styles.label, { color: c.foreground }]}>{label}</Text>
+      <View style={styles.stepperControls}>
+        <TouchableOpacity
+          style={[styles.stepperBtn, { backgroundColor: c.secondary }]}
+          onPress={onDecrease}
+        >
+          <Minus size={18} color={c.foreground} />
+        </TouchableOpacity>
+        <Text style={[styles.stepperValue, { color: c.foreground }]}>
+          {value}
+          {suffix}
+        </Text>
+        <TouchableOpacity
+          style={[styles.stepperBtn, { backgroundColor: c.secondary }]}
+          onPress={onIncrease}
+        >
+          <Plus size={18} color={c.foreground} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
+}
+
+interface SelectCardProps {
+  selected: boolean
+  onPress: () => void
+  icon: React.ComponentType<{ size: number; color: string }>
+  title: string
+  subtitle: string
+}
+
+function SelectCard({ selected, onPress, icon: Icon, title, subtitle }: SelectCardProps) {
+  const c = useThemeColors()
+  return (
+    <TouchableOpacity
+      style={[
+        styles.selectCard,
+        {
+          backgroundColor: selected ? c.primary + "1A" : c.card,
+          borderColor: selected ? c.primary : c.border,
+        },
+      ]}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <Icon size={24} color={selected ? c.primary : c.mutedForeground} />
+      <Text
+        style={[
+          styles.selectTitle,
+          { color: selected ? c.primary : c.foreground },
+        ]}
+      >
+        {title}
+      </Text>
+      <Text style={[styles.selectSubtitle, { color: c.mutedForeground }]}>
+        {subtitle}
+      </Text>
+    </TouchableOpacity>
+  )
+}
+
 export function NovaBrassagemScreen() {
   const c = useThemeColors()
   const navigation = useNavigation<Nav>()
@@ -37,8 +112,8 @@ export function NovaBrassagemScreen() {
   const [mashTempC, setMashTempC] = useState(66)
   const [mashDurationMin, setMashDurationMin] = useState(60)
   const [boilDurationMin, setBoilDurationMin] = useState(60)
-  const [hops, setHops] = useState<HopAddition[]>([
-    { name: "", grams: 0, minutesBeforeEnd: 60 },
+  const [hops, setHops] = useState<HopFormItem[]>([
+    { _id: `hop-${Date.now()}`, name: "", grams: 0, minutesBeforeEnd: 60 },
   ])
   const [envaseType, setEnvaseType] = useState<EnvaseType>("priming")
   const [fermentationType, setFermentationType] = useState<FermentationType>("cooler")
@@ -49,7 +124,9 @@ export function NovaBrassagemScreen() {
       return
     }
 
-    const validHops = hops.filter((h) => h.name.trim() && h.grams > 0)
+    const validHops: HopAddition[] = hops
+      .filter((h) => h.name.trim() && h.grams > 0)
+      .map(({ _id: _ignored, ...hop }) => hop)
 
     const id = createSession({
       name: name.trim(),
@@ -65,94 +142,15 @@ export function NovaBrassagemScreen() {
   }
 
   function addHop() {
-    setHops([...hops, { name: "", grams: 0, minutesBeforeEnd: 0 }])
+    setHops([...hops, { _id: `hop-${Date.now()}-${Math.random().toString(36).slice(2)}`, name: "", grams: 0, minutesBeforeEnd: 0 }])
   }
 
-  function removeHop(index: number) {
-    setHops(hops.filter((_, i) => i !== index))
+  function removeHop(id: string) {
+    setHops(hops.filter((h) => h._id !== id))
   }
 
-  function updateHop(index: number, updates: Partial<HopAddition>) {
-    setHops(hops.map((h, i) => (i === index ? { ...h, ...updates } : h)))
-  }
-
-  function Stepper({
-    value,
-    onDecrease,
-    onIncrease,
-    label,
-    suffix,
-  }: {
-    value: number
-    onDecrease: () => void
-    onIncrease: () => void
-    label: string
-    suffix: string
-  }) {
-    return (
-      <View style={styles.stepperRow}>
-        <Text style={[styles.label, { color: c.foreground }]}>{label}</Text>
-        <View style={styles.stepperControls}>
-          <TouchableOpacity
-            style={[styles.stepperBtn, { backgroundColor: c.secondary }]}
-            onPress={onDecrease}
-          >
-            <Minus size={18} color={c.foreground} />
-          </TouchableOpacity>
-          <Text style={[styles.stepperValue, { color: c.foreground }]}>
-            {value}
-            {suffix}
-          </Text>
-          <TouchableOpacity
-            style={[styles.stepperBtn, { backgroundColor: c.secondary }]}
-            onPress={onIncrease}
-          >
-            <Plus size={18} color={c.foreground} />
-          </TouchableOpacity>
-        </View>
-      </View>
-    )
-  }
-
-  function SelectCard({
-    selected,
-    onPress,
-    icon: Icon,
-    title,
-    subtitle,
-  }: {
-    selected: boolean
-    onPress: () => void
-    icon: React.ComponentType<{ size: number; color: string }>
-    title: string
-    subtitle: string
-  }) {
-    return (
-      <TouchableOpacity
-        style={[
-          styles.selectCard,
-          {
-            backgroundColor: selected ? c.primary + "1A" : c.card,
-            borderColor: selected ? c.primary : c.border,
-          },
-        ]}
-        onPress={onPress}
-        activeOpacity={0.7}
-      >
-        <Icon size={24} color={selected ? c.primary : c.mutedForeground} />
-        <Text
-          style={[
-            styles.selectTitle,
-            { color: selected ? c.primary : c.foreground },
-          ]}
-        >
-          {title}
-        </Text>
-        <Text style={[styles.selectSubtitle, { color: c.mutedForeground }]}>
-          {subtitle}
-        </Text>
-      </TouchableOpacity>
-    )
+  function updateHop(id: string, updates: Partial<HopAddition>) {
+    setHops(hops.map((h) => (h._id === id ? { ...h, ...updates } : h)))
   }
 
   return (
@@ -217,16 +215,16 @@ export function NovaBrassagemScreen() {
         <Text style={[styles.helperText, { color: c.mutedForeground }]}>
           Min. = minutos antes do fim da fervura
         </Text>
-        {hops.map((hop, index) => (
+        {hops.map((hop) => (
           <View
-            key={index}
+            key={hop._id}
             style={[styles.hopRow, { backgroundColor: c.card, borderColor: c.border }]}
           >
             <View style={styles.hopInputs}>
               <TextInput
                 style={[styles.hopInput, styles.hopName, { borderColor: c.border, color: c.foreground }]}
                 value={hop.name}
-                onChangeText={(text) => updateHop(index, { name: text })}
+                onChangeText={(text) => updateHop(hop._id, { name: text })}
                 placeholder="Nome"
                 placeholderTextColor={c.mutedForeground}
               />
@@ -234,7 +232,7 @@ export function NovaBrassagemScreen() {
                 style={[styles.hopInput, styles.hopSmall, { borderColor: c.border, color: c.foreground }]}
                 value={hop.grams > 0 ? String(hop.grams) : ""}
                 onChangeText={(text) =>
-                  updateHop(index, { grams: parseInt(text) || 0 })
+                  updateHop(hop._id, { grams: parseInt(text) || 0 })
                 }
                 placeholder="g"
                 placeholderTextColor={c.mutedForeground}
@@ -244,7 +242,7 @@ export function NovaBrassagemScreen() {
                 style={[styles.hopInput, styles.hopSmall, { borderColor: c.border, color: c.foreground }]}
                 value={String(hop.minutesBeforeEnd)}
                 onChangeText={(text) =>
-                  updateHop(index, {
+                  updateHop(hop._id, {
                     minutesBeforeEnd: Math.min(
                       boilDurationMin,
                       parseInt(text) || 0
@@ -257,7 +255,7 @@ export function NovaBrassagemScreen() {
               />
             </View>
             {hops.length > 1 && (
-              <TouchableOpacity onPress={() => removeHop(index)}>
+              <TouchableOpacity onPress={() => removeHop(hop._id)}>
                 <Trash2 size={18} color={c.destructive} />
               </TouchableOpacity>
             )}

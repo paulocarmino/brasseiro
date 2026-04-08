@@ -30,7 +30,7 @@ export function MosturaPhase({ phase, session }: MosturaPhaseProps) {
 
   function handleDone(index: number) {
     completeStep(session.id, `mostura:${index}`)
-    useBrewSessionStore.getState().advanceStep(session.id)
+    useBrewSessionStore.getState().advanceStep(session.id, phase.steps.length)
   }
 
   const allDone = phase.steps.every((_, i) => isStepDone(i))

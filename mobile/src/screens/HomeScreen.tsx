@@ -17,6 +17,9 @@ export function HomeScreen() {
   const activeSessionId = useBrewSessionStore((s) => s.activeSessionId)
 
   const activeSession = sessions.find((s) => s.id === activeSessionId)
+  const inProgressSessions = sessions.filter(
+    (s) => s.status === "fermenting" || s.status === "conditioning"
+  )
   const completedSessions = sessions
     .filter((s) => s.status === "completed")
     .slice(0, 3)
@@ -27,6 +30,11 @@ export function HomeScreen() {
     fervura: "Fervura",
     resfriamento: "Resfriamento",
     envase: "Envase",
+  }
+
+  const statusLabels: Record<string, string> = {
+    fermenting: "Fermentando",
+    conditioning: "Maturando",
   }
 
   return (
@@ -90,6 +98,42 @@ export function HomeScreen() {
               <ArrowRight size={16} color={c.primaryForeground} />
             </View>
           </TouchableOpacity>
+        )}
+
+        {/* Fermenting / Conditioning Sessions */}
+        {inProgressSessions.length > 0 && (
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: c.foreground }]}>
+              Em andamento
+            </Text>
+            {inProgressSessions.map((session) => (
+              <TouchableOpacity
+                key={session.id}
+                style={[
+                  styles.card,
+                  { backgroundColor: c.card, borderColor: c.border },
+                ]}
+                onPress={() => navigation.navigate("Brassagem", { id: session.id })}
+                activeOpacity={0.7}
+              >
+                <View style={styles.cardHeader}>
+                  <Beer size={20} color={c.primary} />
+                  <Text style={[styles.cardTitle, { color: c.foreground }]}>
+                    {session.name}
+                  </Text>
+                </View>
+                <Text style={[styles.cardPhase, { color: c.mutedForeground }]}>
+                  {statusLabels[session.status] ?? session.status}
+                </Text>
+                <View style={[styles.continueBtn, { backgroundColor: c.secondary }]}>
+                  <Text style={[styles.continueBtnText, { color: c.secondaryForeground }]}>
+                    Acompanhar
+                  </Text>
+                  <ArrowRight size={16} color={c.secondaryForeground} />
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
         )}
 
         {/* New Brew CTA */}

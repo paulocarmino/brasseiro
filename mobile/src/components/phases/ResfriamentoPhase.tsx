@@ -27,7 +27,7 @@ export function ResfriamentoPhase({ phase, session }: ResfriamentoPhaseProps) {
 
   function handleDone(index: number) {
     store.completeStep(session.id, `resfriamento:${index}`)
-    store.advanceStep(session.id)
+    store.advanceStep(session.id, phase.steps.length)
   }
 
   function handleStartFermentation() {

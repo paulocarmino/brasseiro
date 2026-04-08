@@ -28,7 +28,7 @@ interface BrewSessionStore {
   getActiveSession: () => BrewSession | undefined
   updateSession: (id: string, updates: Partial<BrewSession>) => void
   setPhase: (id: string, phase: BrewPhase) => void
-  advanceStep: (id: string) => void
+  advanceStep: (id: string, totalSteps?: number) => void
   completeStep: (id: string, stepKey: string) => void
   toggleStep: (id: string, stepKey: string) => void
   setStatus: (id: string, status: SessionStatus) => void
@@ -97,11 +97,17 @@ export const useBrewSessionStore = create<BrewSessionStore>()(
         }))
       },
 
-      advanceStep: (id) => {
+      advanceStep: (id, totalSteps) => {
         set((state) => ({
-          sessions: state.sessions.map((s) =>
-            s.id === id ? { ...s, currentStepIndex: s.currentStepIndex + 1 } : s
-          ),
+          sessions: state.sessions.map((s) => {
+            if (s.id !== id) return s
+            const next = s.currentStepIndex + 1
+            return {
+              ...s,
+              currentStepIndex:
+                totalSteps !== undefined ? Math.min(next, totalSteps - 1) : next,
+            }
+          }),
         }))
       },
 

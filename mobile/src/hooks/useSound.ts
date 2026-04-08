@@ -1,18 +1,24 @@
-import { useCallback, useRef } from "react"
-import { Audio } from "expo-av"
+import { useCallback, useEffect, useRef } from "react"
 import * as Haptics from "expo-haptics"
 import { useUiStore } from "@/stores/uiStore"
-
-async function playTone(frequency: number, durationMs: number) {
-  // expo-av doesn't support oscillators directly, so we use Haptics as primary feedback
-  // In a production app, you'd bundle short .wav files for each sound
-  // For now, we rely on haptic feedback patterns
-}
 
 export function useSound() {
   const soundEnabled = useUiStore((s) => s.soundEnabled)
   const vibrationEnabled = useUiStore((s) => s.vibrationEnabled)
   const lastPlayedRef = useRef(0)
+  const timeoutRefs = useRef<ReturnType<typeof setTimeout>[]>([])
+
+  useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach(clearTimeout)
+      timeoutRefs.current = []
+    }
+  }, [])
+
+  function schedule(fn: () => void, delay: number) {
+    const id = setTimeout(fn, delay)
+    timeoutRefs.current.push(id)
+  }
 
   const vibrate = useCallback(
     async (type: Haptics.ImpactFeedbackStyle = Haptics.ImpactFeedbackStyle.Medium) => {
@@ -28,31 +34,34 @@ export function useSound() {
   )
 
   const playAlert = useCallback(async () => {
+    if (!soundEnabled) return
     const now = Date.now()
     if (now - lastPlayedRef.current < 500) return
     lastPlayedRef.current = now
 
     // Three haptic bursts for hop alert
     await vibrate(Haptics.ImpactFeedbackStyle.Heavy)
-    setTimeout(() => vibrate(Haptics.ImpactFeedbackStyle.Heavy), 200)
-    setTimeout(() => vibrate(Haptics.ImpactFeedbackStyle.Heavy), 400)
-  }, [vibrate])
+    schedule(() => vibrate(Haptics.ImpactFeedbackStyle.Heavy), 200)
+    schedule(() => vibrate(Haptics.ImpactFeedbackStyle.Heavy), 400)
+  }, [soundEnabled, vibrate])
 
   const playStir = useCallback(async () => {
+    if (!soundEnabled) return
     // Gentle haptic for stir reminder
     await vibrate(Haptics.ImpactFeedbackStyle.Light)
-    setTimeout(() => vibrate(Haptics.ImpactFeedbackStyle.Light), 150)
-  }, [vibrate])
+    schedule(() => vibrate(Haptics.ImpactFeedbackStyle.Light), 150)
+  }, [soundEnabled, vibrate])
 
   const playComplete = useCallback(async () => {
+    if (!soundEnabled) return
     // Celebratory pattern
     await vibrate(Haptics.ImpactFeedbackStyle.Heavy)
-    setTimeout(() => vibrate(Haptics.ImpactFeedbackStyle.Medium), 200)
-    setTimeout(() => vibrate(Haptics.ImpactFeedbackStyle.Heavy), 400)
-    setTimeout(() => {
+    schedule(() => vibrate(Haptics.ImpactFeedbackStyle.Medium), 200)
+    schedule(() => vibrate(Haptics.ImpactFeedbackStyle.Heavy), 400)
+    schedule(() => {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {})
     }, 600)
-  }, [vibrate])
+  }, [soundEnabled, vibrate])
 
   return { playAlert, playStir, playComplete }
 }
