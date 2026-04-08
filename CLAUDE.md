@@ -42,6 +42,35 @@ O Tailwind v4 introduz mudanças significativas na arquitetura:
 
 Se você encontrar tutoriais ou documentação pedindo `tailwind.config.js`, **IGNORE** - isso é v3.
 
+### shadcn/ui + Tailwind v4
+
+**IMPORTANTE**: O `components.json` foi configurado para funcionar com Tailwind v4:
+
+```json
+{
+  "tailwind": {
+    "config": "src/index.css",  // ← Aponta para CSS ao invés de tailwind.config.js
+    ...
+  },
+  "aliases": {
+    "components": "src/components",  // ← Paths relativos (não @/)
+    "utils": "src/lib/utils",
+    ...
+  }
+}
+```
+
+**Por que paths relativos (`src/components`) ao invés de aliases (`@/components`)?**
+- O shadcn CLI pode criar pasta literal `@/` se os aliases não forem resolvidos corretamente
+- Com paths relativos, os componentes sempre caem no lugar certo: `src/components/ui/`
+
+**Se você vir pasta `@/` criada:**
+```bash
+# Mova os componentes para o lugar certo
+mv @/components/ui/* src/components/ui/
+rm -rf @/
+```
+
 ---
 
 ## 1. React + TypeScript Best Practices
@@ -814,6 +843,24 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 2. Nunca commite `.env` com valores reais
 3. Sempre forneça `.env.example` com placeholders
 
+### Variáveis para Deploy de Edge Functions (K8s)
+
+Se você está deployando Edge Functions do Supabase no Kubernetes:
+
+```bash
+# .env
+K8S_NAMESPACE=your-namespace
+K8S_DEPLOYMENT=your-supabase-functions-deployment
+```
+
+**Como descobrir os valores:**
+```bash
+kubectl get namespaces
+kubectl get deployments -n <seu-namespace>
+```
+
+**Fallback:** Se não configurar, o script usa `supabase` e `supabase-functions`.
+
 ---
 
 ## 16. Scripts Disponíveis
@@ -832,7 +879,36 @@ pnpm preview
 
 # Linting
 pnpm lint
+
+# Deploy de Edge Functions para K8s
+pnpm deploy:functions
 ```
+
+### Deploy de Edge Functions (Kubernetes)
+
+Se você está usando Supabase no Kubernetes e quer deployar Edge Functions:
+
+1. **Configure o .env:**
+   ```bash
+   K8S_NAMESPACE=your-namespace
+   K8S_DEPLOYMENT=your-supabase-functions-deployment
+   ```
+
+2. **Crie suas funções em** `supabase/functions/`
+
+3. **Deploy automático:**
+   ```bash
+   pnpm deploy:functions
+   ```
+
+O script automaticamente:
+- ✅ Detecta todas as funções em `supabase/functions/`
+- ✅ Calcula hash SHA256 (detecta mudanças)
+- ✅ Cria/atualiza ConfigMaps no K8s
+- ✅ Adiciona volumes ao deployment
+- ✅ Reinicia pods (apenas se houver mudanças)
+
+**Veja mais:** `K8S_DEPLOY_GUIDE.md` (se existir no projeto)
 
 ---
 

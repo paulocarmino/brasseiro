@@ -1,19 +1,16 @@
-import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
-import { Home } from "lucide-react"
+import { Beer } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-      <h1 className="text-6xl font-bold">404</h1>
-      <h2 className="text-2xl font-semibold">Page Not Found</h2>
-      <p className="text-muted-foreground">The page you're looking for doesn't exist.</p>
-      <Button asChild>
-        <Link to="/">
-          <Home className="w-4 h-4 mr-2" />
-          Go Home
-        </Link>
-      </Button>
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <Beer className="h-16 w-16 text-muted-foreground mb-4" />
+      <h1 className="font-display text-3xl font-bold">404</h1>
+      <p className="text-muted-foreground mt-2 mb-6">Essa pagina evaporou durante a fervura...</p>
+      <Link to="/">
+        <Button>Voltar ao Inicio</Button>
+      </Link>
     </div>
   )
 }
