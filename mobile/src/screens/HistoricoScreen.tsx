@@ -17,7 +17,7 @@ export function HistoricoScreen() {
   const sessions = useBrewSessionStore((s) => s.sessions)
   const deleteSession = useBrewSessionStore((s) => s.deleteSession)
 
-  const allSessions = sessions.filter((s) => s.status !== "active")
+  const allSessions = sessions.filter((s) => s.status === "completed")
 
   function handleDelete(session: BrewSession) {
     Alert.alert(
@@ -132,7 +132,7 @@ export function HistoricoScreen() {
             Historico vazio
           </Text>
           <Text style={[styles.emptySubtitle, { color: c.mutedForeground }]}>
-            Suas brassagens concluidas aparecerão aqui.
+            Suas brassagens concluidas aparecerao aqui.{"\n"}Brassagens em fermentacao aparecem na tela inicial.
           </Text>
         </View>
       ) : (

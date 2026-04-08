@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { AppState } from "react-native"
 import { useTimerStore } from "@/stores/timerStore"
 import { useSound } from "@/hooks/useSound"
@@ -95,8 +95,11 @@ export function useTimer() {
     setRemainingMs(0)
   }, [store])
 
-  const pendingAlerts = store.alerts.filter((a) => !a.fired)
-  const nextAlert = pendingAlerts.sort((a, b) => a.atMs - b.atMs)[0] ?? null
+  const pendingAlerts = useMemo(
+    () => store.alerts.filter((a) => !a.fired).sort((a, b) => a.atMs - b.atMs),
+    [store.alerts]
+  )
+  const nextAlert = pendingAlerts[0] ?? null
 
   return {
     remainingMs,

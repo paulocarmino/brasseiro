@@ -1,6 +1,7 @@
 import { Component } from "react"
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, Appearance } from "react-native"
 import type { ReactNode } from "react"
+import { colors } from "@/theme/colors"
 
 interface Props {
   children: ReactNode
@@ -23,19 +24,22 @@ export class ErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
+      const scheme = Appearance.getColorScheme()
+      const c = scheme === "dark" ? colors.dark : colors.light
+
       return (
-        <View style={styles.container}>
-          <Text style={styles.title}>Algo deu errado</Text>
-          <Text style={styles.message}>
+        <View style={[styles.container, { backgroundColor: c.background }]}>
+          <Text style={[styles.title, { color: c.foreground }]}>Algo deu errado</Text>
+          <Text style={[styles.message, { color: c.mutedForeground }]}>
             {this.state.error?.message ?? "Erro desconhecido"}
           </Text>
           <TouchableOpacity
-            style={styles.button}
+            style={[styles.button, { backgroundColor: c.primary }]}
             onPress={() => this.setState({ hasError: false, error: null })}
             accessibilityRole="button"
             accessibilityLabel="Tentar novamente"
           >
-            <Text style={styles.buttonText}>Tentar novamente</Text>
+            <Text style={[styles.buttonText, { color: c.primaryForeground }]}>Tentar novamente</Text>
           </TouchableOpacity>
         </View>
       )
@@ -51,28 +55,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 24,
-    backgroundColor: "#fff",
   },
   title: {
     fontSize: 20,
     fontWeight: "700",
     marginBottom: 12,
-    color: "#1a1a1a",
   },
   message: {
     fontSize: 14,
-    color: "#666",
     textAlign: "center",
     marginBottom: 24,
   },
   button: {
-    backgroundColor: "#5C3D2E",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
   },
   buttonText: {
-    color: "#fff",
     fontWeight: "600",
     fontSize: 16,
   },
